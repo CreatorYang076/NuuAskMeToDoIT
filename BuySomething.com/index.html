@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechForge 極限硬體旗艦館 | Cyberpunk Hardware Store</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              black: '#080c14',
+              dark: '#0f172a',
+              card: '#131c31',
+              border: '#1e293b',
+              cyan: '#00f3ff',
+              purple: '#a855f7',
+              pink: '#ec4899',
+              accent: '#3b82f6',
+              green: '#10b981'
+            }
+          },
+          fontFamily: {
+            tech: ['Orbitron', 'Rajdhani', 'sans-serif'],
+            sans: ['Inter', 'Microsoft JhengHei', 'sans-serif']
+          },
+          boxShadow: {
+            'neon-cyan': '0 0 20px rgba(0, 243, 255, 0.35)',
+            'neon-purple': '0 0 20px rgba(168, 85, 247, 0.35)',
+            'cyber-glow': '0 0 15px rgba(0, 243, 255, 0.2), inset 0 0 15px rgba(0, 243, 255, 0.1)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Custom CSS for Cyber Animations and Effects -->
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080c14;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 243, 255, 0.2);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00f3ff;
+      box-shadow: 0 0 10px #00f3ff;
+    }
+
+    /* Cyber grid pattern background */
+    .bg-cyber-grid {
+      background-image: 
+        radial-gradient(rgba(0, 243, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 30px 30px, 60px 60px, 60px 60px;
+    }
+
+    /* Glowing borders and clips */
+    .cyber-border-glow {
+      position: relative;
+    }
+    .cyber-border-glow::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(45deg, #00f3ff, transparent, #a855f7);
+      border-radius: inherit;
+      z-index: -1;
+      opacity: 0.3;
+      transition: opacity 0.3s ease;
+    }
+    .cyber-border-glow:hover::before {
+      opacity: 0.8;
+    }
+
+    /* Flying item container */
+    .flying-item {
+      position: fixed;
+      z-index: 9999;
+      pointer-events: none;
+      transition: all 0.75s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00f3ff;
+      border: 2px solid #00f3ff;
+      overflow: hidden;
+    }
+
+    /* Floating +1 Text Animation */
+    @keyframes floatUpFade {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-45px) scale(1.3);
+      }
+    }
+    .floating-plus-one {
+      position: fixed;
+      z-index: 9999;
+      pointer-events: none;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 800;
+      color: #00f3ff;
+      text-shadow: 0 0 10px #00f3ff, 0 0 20px #a855f7;
+      animation: floatUpFade 0.85s forwards cubic-bezier(0.1, 0.8, 0.3, 1);
+    }
+
+    /* Cart Icon Bump Animation */
+    @keyframes cartBump {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.35) rotate(-10deg); }
+      60% { transform: scale(1.2) rotate(10deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+    .cart-bump {
+      animation: cartBump 0.5s ease-out;
+    }
+
+    /* Button Ripple */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      animation: rippleEffect 0.6s linear;
+      background-color: rgba(255, 255, 255, 0.4);
+      pointer-events: none;
+    }
+    @keyframes rippleEffect {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* Particle Canvas overlay */
+    #particleCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* Glassmorphism panel */
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 243, 255, 0.15);
+    }
+
+    /* Scanline overlay effect */
+    .scanline {
+      position: relative;
+      overflow: hidden;
+    }
+    .scanline::after {
+      content: " ";
+      display: block;
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0.3;
+    }
+  </style>
+</head>
+<body class="bg-cyber-black text-slate-100 font-sans min-h-screen bg-cyber-grid selection:bg-cyber-cyan selection:text-cyber-black relative overflow-x-hidden">
+
+  <!-- Floating Spark Particles Canvas -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- Navigation Bar -->
+  <header class="sticky top-0 z-40 glass-panel border-b border-slate-800/80 shadow-lg transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Logo -->
+        <div class="flex items-center space-x-3 cursor-pointer group" onclick="scrollToTop()">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-cyber-cyan via-blue-600 to-cyber-purple flex items-center justify-center p-0.5 shadow-neon-cyan group-hover:scale-105 transition-transform duration-300">
+            <div class="w-full h-full bg-cyber-black rounded-[10px] flex items-center justify-center">
+              <i class="fa-solid fa-microchip text-cyber-cyan text-xl group-hover:rotate-180 transition-transform duration-700"></i>
+            </div>
+          </div>
+          <div>
+            <span class="font-tech text-2xl font-extrabold tracking-wider bg-gradient-to-r from-cyber-cyan via-white to-cyber-purple bg-clip-text text-transparent">
+              TECH<span class="text-cyber-cyan">FORGE</span>
+            </span>
+            <span class="block text-[10px] font-tech text-cyan-400/80 tracking-widest uppercase">極限硬體旗艦館</span>
+          </div>
+        </div>
+
+        <!-- Global Search Bar -->
+        <div class="hidden md:flex flex-1 max-w-md mx-8 relative">
+          <input type="text" id="searchInput" oninput="handleSearch()" placeholder="搜尋顯示卡、RTX 4090、i9-14900KS、DDR5..." 
+            class="w-full bg-slate-900/90 border border-slate-700/80 rounded-full py-2.5 pl-11 pr-10 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan transition-all shadow-inner">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-sm"></i>
+          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3.5 top-3 text-slate-400 hover:text-white">
+            <i class="fa-solid fa-circle-xmark text-sm"></i>
+          </button>
+        </div>
+
+        <!-- Right Quick Actions -->
+        <div class="flex items-center space-x-4 sm:space-x-6">
+          <button onclick="scrollToSection('catalog')" class="hidden sm:flex items-center space-x-2 text-slate-300 hover:text-cyber-cyan transition-colors text-sm font-medium">
+            <i class="fa-solid fa-store"></i>
+            <span>所有硬體</span>
+          </button>
+          
+          <a href="#promoSection" class="hidden lg:flex items-center space-x-1.5 text-xs bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-full hover:bg-amber-500/20 transition-all">
+            <i class="fa-solid fa-bolt text-amber-400 animate-pulse"></i>
+            <span>旗艦特惠</span>
+          </a>
+
+          <!-- Cart Button with Dynamic Badge -->
+          <button id="cartBtn" onclick="toggleCartDrawer(true)" class="relative p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 hover:border-cyber-cyan text-slate-200 hover:text-cyber-cyan transition-all duration-300 shadow-md group">
+            <i class="fa-solid fa-cart-shopping text-xl group-hover:scale-110 transition-transform"></i>
+            <span id="cartBadge" class="absolute -top-2 -right-2 bg-gradient-to-r from-cyber-cyan to-blue-600 text-cyber-black text-xs font-bold font-tech px-2 py-0.5 rounded-full shadow-neon-cyan border border-cyber-black min-w-[22px] text-center transition-transform scale-100">
+              0
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Banner & Campaign Section -->
+  <section id="promoSection" class="relative py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950/80 to-slate-900 border border-cyan-500/30 p-8 md:p-12 shadow-2xl">
+      <!-- Glow background circles -->
+      <div class="absolute -top-24 -left-24 w-96 h-96 bg-cyber-cyan/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-cyber-purple/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 grid md:grid-cols-12 gap-8 items-center">
+        <div class="md:col-span-7 space-y-5">
+          <div class="inline-flex items-center space-x-2 bg-cyan-950/80 border border-cyber-cyan/40 px-3.5 py-1.5 rounded-full text-cyber-cyan text-xs font-tech tracking-wider uppercase">
+            <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-ping"></span>
+            <span>2026 極限效能世代降臨</span>
+          </div>
+          <h1 class="text-3xl sm:text-5xl font-extrabold font-tech tracking-tight text-white leading-tight">
+            打造極致競速神機 <br>
+            <span class="bg-gradient-to-r from-cyber-cyan via-purple-400 to-cyber-pink bg-clip-text text-transparent">
+              解鎖無界算力巔峰
+            </span>
+          </h1>
+          <p class="text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed">
+            匯聚全球頂尖硬體：RTX 4090 旗艦顯卡、 Intel Core Ultra 及 AMD Ryzen 旗艦處理器、 Gen5 極速 NVMe SSD。現正享有全館滿 $30,000 免運費及限定折扣碼！
+          </p>
+          <div class="pt-2 flex flex-wrap gap-4 items-center">
+            <button onclick="filterByCategory('gpu')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyber-cyan to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-cyber-black font-bold font-tech text-sm tracking-wider shadow-neon-cyan transition-all duration-300 hover:scale-105">
+              <i class="fa-solid fa-fire mr-2"></i>搶購旗艦顯卡
+            </button>
+            <div class="text-xs text-slate-400 flex items-center space-x-2 border border-slate-700/60 bg-slate-900/60 px-4 py-3 rounded-xl">
+              <i class="fa-solid fa-ticket text-cyber-cyan"></i>
+              <span>輸入優惠碼 <strong class="text-cyber-cyan font-tech">TECH2026</strong> 折扣 $2,000</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Display Card -->
+        <div class="md:col-span-5 relative flex justify-center">
+          <div class="w-full max-w-sm rounded-2xl bg-slate-900/90 border border-cyan-500/30 p-6 shadow-neon-purple relative scanline transform hover:scale-105 transition-all duration-500">
+            <div class="absolute -top-3 right-4 bg-cyber-pink text-white text-[10px] font-bold font-tech px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+              HOT ITEM
+            </div>
+            <div class="h-44 flex items-center justify-center p-4">
+              <!-- Visual Tech Graphic SVG -->
+              <svg viewBox="0 0 200 120" class="w-full h-full drop-shadow-[0_0_15px_rgba(0,243,255,0.4)]">
+                <rect x="20" y="20" width="160" height="80" rx="8" fill="#131c31" stroke="#00f3ff" stroke-width="2"/>
+                <circle cx="60" cy="60" r="24" fill="#0f172a" stroke="#a855f7" stroke-width="2"/>
+                <circle cx="140" cy="60" r="24" fill="#0f172a" stroke="#a855f7" stroke-width="2"/>
+                <path d="M 60 40 L 60 80 M 40 60 L 80 60" stroke="#00f3ff" stroke-width="1.5"/>
+                <path d="M 140 40 L 140 80 M 120 60 L 160 60" stroke="#00f3ff" stroke-width="1.5"/>
+                <text x="100" y="65" text-anchor="middle" fill="#00f3ff" font-family="Orbitron" font-size="12" font-weight="bold">RTX 4090</text>
+              </svg>
+            </div>
+            <div class="border-t border-slate-800 pt-4 mt-2">
+              <div class="text-xs text-cyber-cyan font-tech">ASUS ROG Strix</div>
+              <div class="font-bold text-white text-base truncate">GeForce RTX 4090 24GB OG OC</div>
+              <div class="flex items-center justify-between mt-3">
+                <span class="text-cyber-cyan font-tech font-extrabold text-xl">NT$ 62,990</span>
+                <button onclick="quickAddToCart(1)" class="px-3 py-1.5 rounded-lg bg-cyber-cyan/10 hover:bg-cyber-cyan/20 border border-cyber-cyan/40 text-cyber-cyan text-xs font-bold transition-all">
+                  <i class="fa-solid fa-plus mr-1"></i>快捷加入
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Catalog & Filter Controls Section -->
+  <main id="catalog" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Filter Header Bar -->
+    <div class="glass-panel rounded-2xl p-6 mb-8 border border-slate-800 shadow-xl space-y-6">
+      
+      <!-- Top Row: Category Tabs -->
+      <div class="flex items-center justify-between flex-wrap gap-4 border-b border-slate-800/80 pb-5">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-sliders text-cyber-cyan text-lg"></i>
+          <h2 class="font-tech text-lg font-bold text-white tracking-wider">商品分類選單</h2>
+        </div>
+        <div class="text-xs text-slate-400">
+          共顯示 <span id="productCount" class="text-cyber-cyan font-bold font-tech text-sm">0</span> 項旗艦零件
+        </div>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="flex flex-wrap gap-2.5" id="categoryPills">
+        <!-- JS dynamically fills pills -->
+      </div>
+
+      <!-- Second Row: Search, Price Slider & Sort Options -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 pt-2 items-center">
+        
+        <!-- Mobile Search Input -->
+        <div class="lg:col-span-4 md:hidden">
+          <input type="text" id="mobileSearchInput" oninput="handleSearch(true)" placeholder="搜尋硬體關鍵字..." 
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white placeholder-slate-500 focus:border-cyber-cyan focus:outline-none">
+        </div>
+
+        <!-- Price Range Filter -->
+        <div class="lg:col-span-7 flex flex-wrap sm:flex-nowrap items-center space-x-3 bg-slate-900/80 border border-slate-800 px-4 py-2.5 rounded-xl">
+          <span class="text-xs text-slate-300 font-medium whitespace-nowrap"><i class="fa-solid fa-coins text-amber-400 mr-1.5"></i>價格上限:</span>
+          <input type="range" id="priceRange" min="1000" max="80000" step="1000" value="80000" oninput="handlePriceFilter(this.value)"
+            class="w-full accent-cyber-cyan cursor-pointer bg-slate-800">
+          <span id="priceValue" class="text-xs font-tech font-bold text-cyber-cyan w-28 text-right">NT$ 80,000</span>
+        </div>
+
+        <!-- Sort Selection Dropdown -->
+        <div class="lg:col-span-5 flex items-center justify-end space-x-2">
+          <label for="sortSelect" class="text-xs text-slate-400 whitespace-nowrap"><i class="fa-solid fa-arrow-down-wide-short mr-1"></i>排序方式:</label>
+          <select id="sortSelect" onchange="handleSortChange(this.value)" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-cyber-cyan cursor-pointer">
+            <option value="featured">熱門推薦 (Featured)</option>
+            <option value="price-low">價格：低至高</option>
+            <option value="price-high">價格：高至低</option>
+            <option value="rating">顧客高評分</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 min-h-[400px]">
+      <!-- JS dynamic hardware product cards render here -->
+    </div>
+
+    <!-- Empty Filter Result Alert -->
+    <div id="noResults" class="hidden text-center py-20 glass-panel rounded-2xl border border-slate-800 my-8">
+      <i class="fa-solid fa-ghost text-5xl text-slate-600 mb-4 animate-bounce"></i>
+      <h3 class="text-xl font-bold font-tech text-slate-300">未找到符合條件的硬體商品</h3>
+      <p class="text-slate-500 text-sm mt-2">請調整關鍵字、分類或是擴大價格區間重試。</p>
+      <button onclick="resetFilters()" class="mt-5 px-5 py-2 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/40 text-cyber-cyan text-xs font-bold hover:bg-cyber-cyan hover:text-cyber-black transition-all">
+        重設所有篩選條件
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Product Specifications Detail Modal -->
+  <div id="specsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="bg-slate-900 border border-cyan-500/40 rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative transform scale-95 transition-all duration-300" id="specsModalContent">
+      
+      <!-- Close Button -->
+      <button onclick="closeSpecsModal()" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-cyber-cyan flex items-center justify-center border border-slate-700 transition-all z-10">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="p-6 sm:p-8 space-y-6">
+        
+        <!-- Top Details Header -->
+        <div class="grid md:grid-cols-12 gap-6 items-center border-b border-slate-800 pb-6">
+          <div class="md:col-span-5 bg-cyber-black/80 rounded-2xl p-4 border border-slate-800 flex items-center justify-center h-52 relative scanline">
+            <div id="modalProductImage" class="w-full h-full flex items-center justify-center"></div>
+          </div>
+          <div class="md:col-span-7 space-y-3">
+            <span id="modalBrandBadge" class="text-xs font-tech text-cyber-cyan border border-cyber-cyan/30 bg-cyber-cyan/10 px-3 py-1 rounded-full">BRAND</span>
+            <h2 id="modalProductName" class="text-xl sm:text-2xl font-bold text-white font-tech">Product Name</h2>
+            <p id="modalProductDesc" class="text-xs text-slate-400 leading-relaxed">Description goes here...</p>
+            
+            <div class="flex items-center space-x-3 pt-2">
+              <span id="modalProductPrice" class="text-2xl font-tech font-extrabold text-cyber-cyan">NT$ 0</span>
+              <span id="modalProductOriginalPrice" class="text-xs text-slate-500 line-through font-tech">NT$ 0</span>
+              <span id="modalStockBadge" class="text-[10px] font-bold px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">現貨充足</span>
+            </div>
+
+            <!-- Quantity Selector & Actions -->
+            <div class="pt-4 flex items-center space-x-4">
+              <div class="flex items-center border border-slate-700 bg-slate-800 rounded-xl overflow-hidden">
+                <button onclick="adjustModalQty(-1)" class="px-3 py-2 text-slate-300 hover:bg-slate-700 hover:text-cyber-cyan transition-colors">
+                  <i class="fa-solid fa-minus text-xs"></i>
+                </button>
+                <span id="modalQtyDisplay" class="px-4 text-sm font-tech font-bold text-white">1</span>
+                <button onclick="adjustModalQty(1)" class="px-3 py-2 text-slate-300 hover:bg-slate-700 hover:text-cyber-cyan transition-colors">
+                  <i class="fa-solid fa-plus text-xs"></i>
+                </button>
+              </div>
+
+              <button id="modalAddToCartBtn" class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-cyber-cyan to-blue-600 text-cyber-black font-bold font-tech text-xs tracking-wider shadow-neon-cyan hover:brightness-110 transition-all flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-cart-plus"></i>
+                <span>加入購物車</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Specifications Table -->
+        <div>
+          <h3 class="text-sm font-tech font-bold text-cyber-cyan mb-3 flex items-center space-x-2">
+            <i class="fa-solid fa-list-check"></i>
+            <span>詳細技術規格說明 (Technical Specs)</span>
+          </h3>
+          <div class="rounded-xl border border-slate-800 overflow-hidden">
+            <table class="w-full text-left text-xs">
+              <tbody id="modalSpecsTable" class="divide-y divide-slate-800/80 bg-slate-900/60">
+                <!-- JS Populates Specs rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Highlight Bullet points -->
+        <div class="bg-slate-800/40 rounded-xl p-4 border border-slate-800/80">
+          <h4 class="text-xs font-bold text-slate-300 mb-2 font-tech"><i class="fa-solid fa-shield-halved text-cyber-cyan mr-1.5"></i>TechForge 售後與保固服務</h4>
+          <ul class="text-[11px] text-slate-400 space-y-1 list-disc list-inside">
+            <li>原廠代理公司貨，享有 3 至 5 年原廠繁體中文免費保固</li>
+            <li>全台快換中心免費專人檢測與 7 天不良新品換新服務</li>
+            <li>隨貨附發票與精密防靜電包裝防震運送</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Side Sliding Cart Drawer -->
+  <div id="cartDrawer" class="fixed inset-0 z-50 pointer-events-none transition-all duration-300">
+    <!-- Backdrop Overlay -->
+    <div id="cartBackdrop" onclick="toggleCartDrawer(false)" class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+
+    <!-- Drawer Panel -->
+    <div id="cartPanel" class="absolute top-0 right-0 bottom-0 w-full max-w-md bg-slate-900 border-l border-cyan-500/30 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-out pointer-events-auto">
+      
+      <!-- Drawer Header -->
+      <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
+        <div class="flex items-center space-x-3">
+          <div class="w-9 h-9 rounded-lg bg-cyber-cyan/10 border border-cyber-cyan/40 flex items-center justify-center text-cyber-cyan">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </div>
+          <div>
+            <h3 class="font-tech font-bold text-white text-base">您的極限購物車</h3>
+            <span class="text-[10px] text-slate-400">裝載最佳硬體組件</span>
+          </div>
+        </div>
+        <button onclick="toggleCartDrawer(false)" class="text-slate-400 hover:text-white p-2">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Free Shipping Progress Bar -->
+      <div class="bg-slate-950/80 p-4 border-b border-slate-800 space-y-2">
+        <div class="flex justify-between text-xs">
+          <span class="text-slate-300"><i class="fa-solid fa-truck-fast text-cyber-cyan mr-1.5"></i>滿額免運進度</span>
+          <span id="shippingStatusText" class="font-tech text-cyber-cyan font-bold">還差 NT$ 30,000</span>
+        </div>
+        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden p-0.5">
+          <div id="shippingProgressBar" class="bg-gradient-to-r from-cyber-cyan to-blue-500 h-full rounded-full transition-all duration-500 w-0"></div>
+        </div>
+      </div>
+
+      <!-- Cart Item List -->
+      <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <!-- JS fills item list -->
+      </div>
+
+      <!-- Empty Cart State -->
+      <div id="emptyCartView" class="hidden flex-1 flex flex-col items-center justify-center p-8 text-center">
+        <div class="w-20 h-20 rounded-full bg-slate-800/80 flex items-center justify-center mb-4 text-slate-600 border border-slate-700">
+          <i class="fa-solid fa-cart-arrow-down text-3xl"></i>
+        </div>
+        <p class="font-tech font-bold text-slate-300 text-lg">購物車目前是空的</p>
+        <p class="text-slate-500 text-xs mt-1 max-w-xs">快選購 RTX 4090 或旗艦處理器，為您的電競神機升級效能！</p>
+        <button onclick="toggleCartDrawer(false)" class="mt-6 px-6 py-2.5 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/40 text-cyber-cyan font-tech font-bold text-xs hover:bg-cyber-cyan hover:text-cyber-black transition-all">
+          前往挑選商品
+        </button>
+      </div>
+
+      <!-- Footer Checkout Summary -->
+      <div class="p-5 border-t border-slate-800 bg-slate-900/95 space-y-4">
+        
+        <!-- Coupon Code Input -->
+        <div class="flex items-center space-x-2">
+          <input type="text" id="couponInput" placeholder="輸入折扣碼 (例: TECH2026)" class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white uppercase placeholder-slate-500 focus:outline-none focus:border-cyber-cyan">
+          <button onclick="applyCoupon()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 hover:text-cyber-cyan text-xs font-bold rounded-xl transition-all">
+            套用
+          </button>
+        </div>
+
+        <!-- Applied Coupon Alert Tag -->
+        <div id="appliedCouponTag" class="hidden flex items-center justify-between bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-lg text-emerald-400 text-xs">
+          <span><i class="fa-solid fa-tag mr-1.5"></i>已套用折扣碼：<strong id="couponCodeDisplay">TECH2026</strong></span>
+          <button onclick="removeCoupon()" class="text-slate-400 hover:text-red-400"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- Calculation breakdown -->
+        <div class="space-y-1.5 text-xs">
+          <div class="flex justify-between text-slate-400">
+            <span>小計 (Subtotal)</span>
+            <span id="cartSubtotal" class="font-tech text-white">NT$ 0</span>
+          </div>
+          <div class="flex justify-between text-slate-400">
+            <span>折扣優惠 (Discount)</span>
+            <span id="cartDiscount" class="font-tech text-emerald-400">- NT$ 0</span>
+          </div>
+          <div class="flex justify-between text-slate-400">
+            <span>預估運費 (Shipping)</span>
+            <span id="cartShipping" class="font-tech text-white">NT$ 0</span>
+          </div>
+          <div class="flex justify-between text-base font-bold text-white pt-2 border-t border-slate-800">
+            <span class="font-tech">總計金額 (Total)</span>
+            <span id="cartTotal" class="font-tech text-cyber-cyan text-xl font-extrabold">NT$ 0</span>
+          </div>
+        </div>
+
+        <!-- Checkout Buttons -->
+        <div class="grid grid-cols-2 gap-3 pt-2">
+          <button onclick="clearCart()" class="py-3 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs font-bold transition-all">
+            清空購物車
+          </button>
+          <button onclick="openCheckoutModal()" class="py-3 rounded-xl bg-gradient-to-r from-cyber-cyan to-blue-600 text-cyber-black font-bold font-tech text-xs tracking-wider shadow-neon-cyan hover:brightness-110 transition-all">
+            前往結帳 <i class="fa-solid fa-arrow-right ml-1"></i>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Checkout Workflow Modal -->
+  <div id="checkoutModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="bg-slate-900 border border-cyan-500/40 rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto shadow-2xl relative p-6 sm:p-8" id="checkoutModalContent">
+      
+      <button onclick="closeCheckoutModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+
+      <!-- Checkout Title -->
+      <div class="flex items-center space-x-3 border-b border-slate-800 pb-5 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/40 flex items-center justify-center text-cyber-cyan">
+          <i class="fa-solid fa-credit-card"></i>
+        </div>
+        <div>
+          <h2 class="font-tech font-bold text-xl text-white">安全結帳與收件設定</h2>
+          <p class="text-xs text-slate-400">請確認訂單資料與選擇付款方式</p>
+        </div>
+      </div>
+
+      <!-- Step Indicator -->
+      <div class="flex items-center justify-between mb-8 text-xs font-tech">
+        <div class="flex items-center space-x-2 text-cyber-cyan">
+          <span class="w-6 h-6 rounded-full bg-cyber-cyan text-cyber-black flex items-center justify-center font-bold">1</span>
+          <span>確認訂單</span>
+        </div>
+        <div class="h-0.5 flex-1 bg-slate-800 mx-3"></div>
+        <div class="flex items-center space-x-2 text-slate-400">
+          <span class="w-6 h-6 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center font-bold">2</span>
+          <span>收件與付款</span>
+        </div>
+      </div>
+
+      <!-- Checkout Form -->
+      <form id="checkoutForm" onsubmit="submitOrder(event)" class="space-y-6">
+        
+        <!-- Summary Review -->
+        <div class="bg-slate-950/80 rounded-2xl p-4 border border-slate-800 space-y-2">
+          <h3 class="text-xs font-bold text-slate-300 font-tech uppercase tracking-wider mb-2">訂單摘要</h3>
+          <div id="checkoutItemsList" class="max-h-36 overflow-y-auto space-y-2 pr-2 divide-y divide-slate-800/60">
+            <!-- JS populates checkout summary -->
+          </div>
+          <div class="border-t border-slate-800 pt-3 flex justify-between font-bold text-sm text-white">
+            <span>應付總金額</span>
+            <span id="checkoutTotalAmount" class="text-cyber-cyan font-tech text-lg">NT$ 0</span>
+          </div>
+        </div>
+
+        <!-- Customer Information -->
+        <div class="space-y-4">
+          <h3 class="text-xs font-bold text-cyber-cyan font-tech uppercase tracking-wider">收件人資料</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">真實姓名 *</label>
+              <input type="text" required placeholder="例如：陳極限" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyber-cyan">
+            </div>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">行動電話 *</label>
+              <input type="tel" required placeholder="0912-345-678" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyber-cyan">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">電子郵件 (收取電子發票與通知) *</label>
+            <input type="email" required placeholder="cyber@techforge.tw" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyber-cyan">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">配送地址 *</label>
+            <input type="text" required placeholder="請填寫完整縣市街道門牌" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyber-cyan">
+          </div>
+        </div>
+
+        <!-- Payment Method Selection -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-bold text-cyber-cyan font-tech uppercase tracking-wider">選擇付款方式</h3>
+          <div class="grid grid-cols-3 gap-3">
+            <label class="border border-slate-700 bg-slate-800/80 rounded-xl p-3 cursor-pointer flex flex-col items-center justify-center space-y-2 hover:border-cyber-cyan transition-all">
+              <input type="radio" name="paymentMethod" value="credit" checked class="accent-cyber-cyan">
+              <i class="fa-regular fa-credit-card text-cyber-cyan text-lg"></i>
+              <span class="text-[11px] text-slate-300 font-medium">信用卡線上刷卡</span>
+            </label>
+            <label class="border border-slate-700 bg-slate-800/80 rounded-xl p-3 cursor-pointer flex flex-col items-center justify-center space-y-2 hover:border-cyber-cyan transition-all">
+              <input type="radio" name="paymentMethod" value="linepay" class="accent-cyber-cyan">
+              <i class="fa-solid fa-qrcode text-emerald-400 text-lg"></i>
+              <span class="text-[11px] text-slate-300 font-medium">LINE Pay 支付</span>
+            </label>
+            <label class="border border-slate-700 bg-slate-800/80 rounded-xl p-3 cursor-pointer flex flex-col items-center justify-center space-y-2 hover:border-cyber-cyan transition-all">
+              <input type="radio" name="paymentMethod" value="atm" class="accent-cyber-cyan">
+              <i class="fa-solid fa-building-columns text-purple-400 text-lg"></i>
+              <span class="text-[11px] text-slate-300 font-medium">ATM 虛擬轉帳</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Complete Button -->
+        <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyber-cyan via-blue-600 to-cyber-purple text-cyber-black font-extrabold font-tech text-sm tracking-wider shadow-neon-cyan hover:brightness-110 transition-all flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-lock"></i>
+          <span>確認並立即支付訂單</span>
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Order Confirmation Success Modal -->
+  <div id="orderSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="bg-slate-900 border border-emerald-500/40 rounded-3xl max-w-md w-full p-8 text-center shadow-2xl relative space-y-5">
+      <div class="w-20 h-20 rounded-full bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center mx-auto text-emerald-400 text-3xl animate-bounce">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <div>
+        <span class="text-xs font-tech text-emerald-400 uppercase tracking-widest">ORDER PLACED SUCCESSFULLY</span>
+        <h2 class="text-2xl font-bold text-white font-tech mt-1">訂單已順利完成！</h2>
+        <p class="text-slate-400 text-xs mt-2">感謝您選購 TechForge 極限硬體！我們將盡快安排黑貓宅急便優先配貨。</p>
+      </div>
+
+      <div class="bg-slate-950 p-4 rounded-xl text-left border border-slate-800 text-xs space-y-1.5 font-tech">
+        <div class="flex justify-between"><span class="text-slate-500">訂單編號：</span><span id="successOrderId" class="text-cyber-cyan font-bold">TF-20268899</span></div>
+        <div class="flex justify-between"><span class="text-slate-500">預計送達：</span><span class="text-slate-200">24 小時內快速到貨</span></div>
+      </div>
+
+      <button onclick="closeOrderSuccessModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-600 text-slate-950 font-bold font-tech text-xs tracking-wider shadow-lg hover:brightness-110 transition-all">
+        返回選購頁面
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed bottom-6 right-6 z-50 space-y-3 pointer-events-none"></div>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 bg-slate-950 py-12 mt-20 text-slate-400 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div class="space-y-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-microchip text-cyber-cyan text-lg"></i>
+          <span class="font-tech text-lg font-bold text-white">TECHFORGE</span>
+        </div>
+        <p class="text-slate-500 leading-relaxed">專業極限硬體旗艦館，專為電競玩家、創作者與 AI 運算專家打造最佳組裝與擴充體驗。</p>
+      </div>
+      <div>
+        <h4 class="font-tech font-bold text-slate-200 text-sm mb-3">商品選購指南</h4>
+        <ul class="space-y-2">
+          <li><a href="#catalog" onclick="filterByCategory('gpu')" class="hover:text-cyber-cyan transition-colors">顯示卡 GeForce RTX / RX</a></li>
+          <li><a href="#catalog" onclick="filterByCategory('cpu')" class="hover:text-cyber-cyan transition-colors">中央處理器 Intel / AMD</a></li>
+          <li><a href="#catalog" onclick="filterByCategory('mb')" class="hover:text-cyber-cyan transition-colors">Z790 / X670E 頂級主機板</a></li>
+          <li><a href="#catalog" onclick="filterByCategory('memory')" class="hover:text-cyber-cyan transition-colors">DDR5 RGB 記憶體與 Gen5 SSD</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-tech font-bold text-slate-200 text-sm mb-3">顧客服務與支援</h4>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:text-cyber-cyan transition-colors">組裝相容性線上諮詢</a></li>
+          <li><a href="#" class="hover:text-cyber-cyan transition-colors">快換中心與原廠保固</a></li>
+          <li><a href="#" class="hover:text-cyber-cyan transition-colors">黑貓全程低溫防震配送</a></li>
+          <li><a href="#" class="hover:text-cyber-cyan transition-colors">退換貨須知與發票查詢</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-tech font-bold text-slate-200 text-sm mb-3">旗艦門市據點</h4>
+        <p class="text-slate-500">台北市中正區八德路一段 (光華數位新天地旗艦展示中心)</p>
+        <p class="text-slate-500 mt-2">客服專線：(02) 2390-8888</p>
+        <div class="flex space-x-3 mt-4 text-slate-300">
+          <a href="#" class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center hover:text-cyber-cyan border border-slate-800"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center hover:text-cyber-cyan border border-slate-800"><i class="fa-brands fa-discord"></i></a>
+          <a href="#" class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center hover:text-cyber-cyan border border-slate-800"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 mt-8 border-t border-slate-900 text-center text-slate-600 text-[11px]">
+      © 2026 TechForge Cyber Hardware Inc. All Rights Reserved. 僅供個人學習展示使用。
+    </div>
+  </footer>
+
+  <!-- Vanilla JavaScript Logic -->
+  <script>
+    // 50+ Hardware Products Database
+    const PRODUCTS = [
+      // 顯示卡 GPUs (9)
+      { id: 1, category: 'gpu', name: 'ASUS ROG Strix GeForce RTX 4090 24GB OG OC', brand: 'ASUS ROG', price: 62990, originalPrice: 66900, badge: 'HOT', rating: 4.9, reviews: 184, stock: 8, specsSummary: ['24GB GDDR6X', '2520 MHz', 'DLSS 3.5'], specsDetail: { '顯存容量': '24GB GDDR6X', '核心時脈': 'Boost 2520 MHz', '輸出介面': 'HDMI 2.1a x2, DP 1.4a x3', '建議電源': '1000W', '尺寸': '357.6 x 149.3 x 70.1 mm' }, desc: '當代算力終極霸主，配備 3.5 槽超厚熱導管鰭片與 135mm 雙軸承風扇，極限超頻首選。' },
+      { id: 2, category: 'gpu', name: 'GIGABYTE RTX 4080 Super Gaming OC 16GB', brand: 'GIGABYTE', price: 38990, originalPrice: 41900, badge: 'SALE', rating: 4.8, reviews: 120, stock: 15, specsSummary: ['16GB GDDR6X', '風魔三風扇', 'RGB Halo'], specsDetail: { '顯存容量': '16GB GDDR6X', '核心時脈': '2595 MHz', '建議電源': '850W', '保固': '5年原廠保固' }, desc: '強勁風魔散熱系統搭配金屬強化背板，滿足 4K 144Hz 極限畫質電競需求。' },
+      { id: 3, category: 'gpu', name: 'MSI GeForce RTX 4070 Ti Super 16G Ventus 3X', brand: 'MSI', price: 29990, originalPrice: 32500, badge: 'BEST', rating: 4.7, reviews: 95, stock: 12, specsSummary: ['16GB GDDR6X', 'TORX Fan 4.0', '超薄三風扇'], specsDetail: { '顯存容量': '16GB GDDR6X', '建議電源': '750W', '介面': 'PCIe 4.0' }, desc: 'Ventus 三風扇簡潔強悍設計，提供極佳的 CP 值與高幀率光線追蹤表現。' },
+      { id: 4, category: 'gpu', name: 'ZOTAC Gaming RTX 4070 Super Twin Edge 12GB', brand: 'ZOTAC', price: 21990, originalPrice: 23900, badge: 'LIMITED', rating: 4.6, reviews: 64, stock: 18, specsSummary: ['12GB GDDR6X', '雙風扇小機殼首選', 'IceStorm 2.0'], specsDetail: { '顯存容量': '12GB', '建議電源': '650W', '長度': '225.5 mm' }, desc: '精巧雙風扇長度僅 22.5cm，完美適配 ITX 小機殼與中型機箱。' },
+      { id: 5, category: 'gpu', name: 'PowerColor Red Devil AMD Radeon RX 7900 XTX 24GB', brand: 'PowerColor', price: 34990, originalPrice: 38900, badge: 'HOT', rating: 4.8, reviews: 88, stock: 7, specsSummary: ['24GB GDDR6', 'RDNA 3 旗艦', '惡魔專屬燈效'], specsDetail: { '顯存容量': '24GB', '匯流排': '384-bit', '建議電源': '900W' }, desc: '紅魔專屬極限散熱與金屬背板，展現 RDNA 3 架構的高強傳統算力。' },
+      { id: 6, category: 'gpu', name: 'Sapphire NITRO+ AMD Radeon RX 7800 XT 16GB', brand: 'Sapphire', price: 18990, originalPrice: 20900, badge: 'BEST', rating: 4.9, reviews: 142, stock: 20, specsSummary: ['16GB GDDR6', '快拆風扇', 'ARGB 貫穿燈條'], specsDetail: { '顯存容量': '16GB', '建議電源': '700W', '保固': '3年' }, desc: '藍寶堅尼等級經典藍寶石 Nitro+ 散熱，口碑極佳的 2K 遊戲神卡。' },
+      { id: 7, category: 'gpu', name: 'GALAX GeForce RTX 4060 Ti 16GB EX 1-Click OC', brand: 'GALAX', price: 15490, originalPrice: 16900, badge: 'NEW', rating: 4.5, reviews: 42, stock: 25, specsSummary: ['16GB 大顯存', '1-Click 超頻', '靜音雙風扇'], specsDetail: { '顯存容量': '16GB GDDR6', '建議電源': '550W' }, desc: '16GB 超大顯存加持，對於 AI 繪圖與 Stable Diffusion 入門首選。' },
+      { id: 8, category: 'gpu', name: 'ASUS TUF Gaming GeForce RTX 3060 V2 OC 12GB', brand: 'ASUS TUF', price: 8990, originalPrice: 9990, badge: 'SALE', rating: 4.8, reviews: 310, stock: 30, specsSummary: ['12GB GDDR6', 'TUF 軍規品質', '雙軸承風扇'], specsDetail: { '顯存容量': '12GB GDDR6', '建議電源': '650W' }, desc: '經典不朽 1080p 遊戲神卡，軍規元件強化極致耐用度。' },
+      { id: 9, category: 'gpu', name: 'Intel Arc A770 Limited Edition 16GB', brand: 'Intel', price: 9990, originalPrice: 11900, badge: 'LIMITED', rating: 4.4, reviews: 50, stock: 9, specsSummary: ['16GB GDDR6', 'Intel XeSS', 'AV1 硬體編碼'], specsDetail: { '顯存容量': '16GB', '介面': 'PCIe 4.0 x16', '建議電源': '600W' }, desc: 'Intel 原廠公版極簡光環燈效，具備強悍 AV1 影片轉檔編碼實力。' },
+
+      // 中央處理器 CPUs (8)
+      { id: 10, category: 'cpu', name: 'Intel Core i9-14900KS 24核/32緒 6.2GHz', brand: 'Intel', price: 23990, originalPrice: 25900, badge: 'HOT', rating: 4.9, reviews: 75, stock: 5, specsSummary: ['24核心 / 32執行緒', '最大超頻 6.2GHz', 'LGA1700'], specsDetail: { '核心數': '24 (8P + 16E)', '執行緒': '32', '時脈': '基礎 3.2GHz / 睿頻 6.2GHz', '基礎功耗': '150W' }, desc: '特挑出廠極限電壓體質，突破 6.2GHz 史上最高時脈紀錄。' },
+      { id: 11, category: 'cpu', name: 'AMD Ryzen 7 7800X3D 8核/16緒', brand: 'AMD', price: 12990, originalPrice: 14500, badge: 'BEST', rating: 5.0, reviews: 420, stock: 14, specsSummary: ['96MB 3D V-Cache', 'AM5 腳位', '電競遊戲神器'], specsDetail: { '核心數': '8核心 / 16執行緒', 'L3快取': '96MB', 'TDP': '120W' }, desc: '全球評測一致公認最佳電競遊戲處理器，巨量 3D 快取大幅拉高 FPS。' },
+      { id: 12, category: 'cpu', name: 'Intel Core i7-14700K 20核/28緒', brand: 'Intel', price: 14890, originalPrice: 15900, badge: 'SALE', rating: 4.8, reviews: 160, stock: 22, specsSummary: ['20核心 / 28執行緒', '最大 5.6GHz', '可超頻'], specsDetail: { '核心數': '20 (8P + 12E)', '快取': '33MB', '腳位': 'LGA1700' }, desc: '增加了 4 顆 E-core 效能核心，多工剪輯與 3D 渲染CP值全爆發。' },
+      { id: 13, category: 'cpu', name: 'AMD Ryzen 9 7950X3D 16核/32緒', brand: 'AMD', price: 21990, originalPrice: 23900, badge: 'HOT', rating: 4.9, reviews: 92, stock: 6, specsSummary: ['16核心 / 32執行緒', '128MB 3D 快取', 'AM5'], specsDetail: { '核心數': '16核', '執行緒': '32緒', '最大睿頻': '5.7GHz' }, desc: '兼具強悍多工生產力與 3D V-Cache 極致遊戲幀數的終極夢幻選單。' },
+      { id: 14, category: 'cpu', name: 'Intel Core i5-14600KF 14核/20緒', brand: 'Intel', price: 9790, originalPrice: 10500, badge: 'BEST', rating: 4.7, reviews: 210, stock: 35, specsSummary: ['14核心 / 20執行緒', '無內顯更優惠', '5.3GHz'], specsDetail: { '核心數': '14 (6P + 8E)', '腳位': 'LGA1700' }, desc: '主流玩家一致熱推的主機心臟，預算適中且超頻實力出眾。' },
+      { id: 15, category: 'cpu', name: 'AMD Ryzen 5 7600X 6核/12緒', brand: 'AMD', price: 6990, originalPrice: 7990, badge: 'SALE', rating: 4.6, reviews: 130, stock: 40, specsSummary: ['6核心 / 12執行緒', '5.3GHz Boost', 'Zen 4'], specsDetail: { '架構': 'Zen 4 (5nm)', 'TDP': '105W' }, desc: 'AM5 新平台優質入門心臟，支援 DDR5 與 PCIe 5.0 升級空間無虞。' },
+      { id: 16, category: 'cpu', name: 'AMD Ryzen 9 9950X Zen 5 旗艦處理器', brand: 'AMD', price: 22990, originalPrice: 24900, badge: 'NEW', rating: 4.9, reviews: 31, stock: 10, specsSummary: ['16核心 / 32執行緒', 'Zen 5 新架構', '5.7GHz'], specsDetail: { '製程': 'TSMC 4nm', 'L3快取': '64MB' }, desc: '次世代 Zen 5 旗艦架構，IPC 效能全面拉升，AI 算力再升級。' },
+      { id: 17, category: 'cpu', name: 'Intel Core Ultra 9 285K 旗艦高階處理器', brand: 'Intel', price: 21990, originalPrice: 23500, badge: 'NEW', rating: 4.8, reviews: 25, stock: 8, specsSummary: ['Arrow Lake', 'NPU AI 算力', 'LGA1851'], specsDetail: { '腳位': 'LGA1851', 'NPU': 'Intel AI Boost' }, desc: '全新 LGA1851 腳位與 NPU 架構，極致省電與 AI 智慧加速。' },
+
+      // 主機板 Motherboards (7)
+      { id: 18, category: 'mb', name: 'ASUS ROG MAXIMUS Z790 DARK HERO', brand: 'ASUS ROG', price: 20990, originalPrice: 22900, badge: 'HOT', rating: 5.0, reviews: 68, stock: 6, specsSummary: ['20+1+2 相供電', 'WiFi 7', 'PCIe 5.0 SSD'], specsDetail: { '晶片組': 'Intel Z790', '腳位': 'LGA1700', '網路': 'Intel 2.5G + WiFi 7' }, desc: '黑化極致美學，配備 ROG Q-Release 顯卡快拆與強悍超頻供電。' },
+      { id: 19, category: 'mb', name: 'MSI MEG X670E GODLIKE 頂級主機板', brand: 'MSI', price: 38990, originalPrice: 42000, badge: 'LIMITED', rating: 4.9, reviews: 15, stock: 2, specsSummary: ['24+2+1 供電', 'M-Vision 觸控螢幕', 'E-ATX'], specsDetail: { '晶片組': 'AMD X670E', '觸控屏': '3.5吋全彩', '網路': '10G + 2.5G LAN' }, desc: '主機板界王者象徵，內建彩色 Touch Screen 可監控系統數據。' },
+      { id: 20, category: 'mb', name: 'GIGABYTE Z790 AORUS MASTER X', brand: 'GIGABYTE', price: 17990, originalPrice: 19500, badge: 'BEST', rating: 4.8, reviews: 45, stock: 10, specsSummary: ['10G 極速網路', 'EZ-Latch 無螺絲安裝', 'WiFi 7'], specsDetail: { '晶片組': 'Z790', '記憶體': 'DDR5 8260+ MHz' }, desc: '高性價比旗艦板，全金屬鰭片散熱裝甲保護，強悍 10G 網卡。' },
+      { id: 21, category: 'mb', name: 'ASRock X670E Taichi Carrara 大理石限定版', brand: 'ASRock', price: 16990, originalPrice: 18900, badge: 'LIMITED', rating: 4.8, reviews: 29, stock: 4, specsSummary: ['大理石紋理裝甲', '24 相 SPS 供電', 'USB4'], specsDetail: { '晶片組': 'AMD X670E', '風扇': '隨附 Carrara 風扇' }, desc: '義大利卡拉拉大理石頂級美學設計，慶祝太極十週年限定款。' },
+      { id: 22, category: 'mb', name: 'ASUS TUF GAMING B760-PLUS WIFI', brand: 'ASUS TUF', price: 5990, originalPrice: 6590, badge: 'SALE', rating: 4.7, reviews: 180, stock: 28, specsSummary: ['DDR5 支援', 'WiFi 6E', 'TUF 軍規品質'], specsDetail: { '晶片組': 'Intel B760', '規格': 'ATX' }, desc: '裝機主流不二之選，軍規用料搭配極致穩定的耐用度。' },
+      { id: 23, category: 'mb', name: 'MSI MAG B650 TOMAHAWK WIFI', brand: 'MSI', price: 6590, originalPrice: 7290, badge: 'BEST', rating: 4.8, reviews: 155, stock: 20, specsSummary: ['8層 PCB 板', '加厚散熱裝甲', 'AMD AM5'], specsDetail: { '晶片組': 'AMD B650', '網路': '2.5G LAN + Wi-Fi 6E' }, desc: '全黑戰斧帥氣裝甲，AM5 平台 CP 值霸主級主機板。' },
+      { id: 24, category: 'mb', name: 'GIGABYTE B650I AORUS ULTRA Mini-ITX', brand: 'GIGABYTE', price: 8290, originalPrice: 8990, badge: 'NEW', rating: 4.6, reviews: 33, stock: 8, specsSummary: ['ITX 小板王者', 'Direct 8+2+1 相', 'PCIe 5.0'], specsDetail: { '尺寸': 'Mini-ITX (17x17cm)' }, desc: '小鋼炮迷夢寐以求的極致 ITX 主機板，小空間蘊含強大算力。' },
+
+      // 記憶體/儲存 RAM & SSD (8)
+      { id: 25, category: 'memory', name: 'G.SKILL Trident Z5 RGB DDR5-7200 64GB (32GBx2)', brand: 'G.SKILL', price: 8990, originalPrice: 9990, badge: 'HOT', rating: 4.9, reviews: 110, stock: 15, specsSummary: ['DDR5-7200', '64GB 雙通道', '炫光 RGB'], specsDetail: { '時序': 'CL34-45-45-115', '電壓': '1.40V', '保固': '終身保固' }, desc: '芝奇幻鋒薩 RGB 流線造型，極速 7200MHz 雙通道飆速首選。' },
+      { id: 26, category: 'memory', name: 'CORSAIR Dominator Titanium DDR5-6000 32GB (16GBx2)', brand: 'CORSAIR', price: 6890, originalPrice: 7590, badge: 'BEST', rating: 4.8, reviews: 78, stock: 18, specsSummary: ['可替換頂蓋', 'DHX 專利散熱', 'iCUE 燈效'], specsDetail: { '容量': '32GB (16GBx2)', '時序': 'CL30' }, desc: '海盜船鈦金版頂級造型，奢華美學質感與高頻穩定效能。' },
+      { id: 27, category: 'memory', name: 'Kingston FURY Renegade DDR5-6400 32GB (16GBx2)', brand: 'Kingston', price: 4590, originalPrice: 4990, badge: 'SALE', rating: 4.7, reviews: 140, stock: 30, specsSummary: ['鋁合金散熱片', 'Intel XMP 3.0', '終身保固'], specsDetail: { '頻率': '6400 MT/s', '時序': 'CL32' }, desc: '金士頓叛逆者系列，帥氣黑銀幾何散熱片，超頻相容性極高。' },
+      { id: 28, category: 'memory', name: 'Samsung 990 PRO 2TB NVMe M.2 PCIe 4.0 SSD (含散熱片)', brand: 'Samsung', price: 5990, originalPrice: 6590, badge: 'HOT', rating: 5.0, reviews: 340, stock: 25, specsSummary: ['7450 MB/s 極速', '原廠獨家散熱片', 'PS5 完美擴充'], specsDetail: { '讀取速度': '7450 MB/s', '寫入速度': '6900 MB/s', '保固': '5年' }, desc: 'PCIe 4.0 固態硬碟天花板，整合原廠RGB動態燈效散熱片。' },
+      { id: 29, category: 'memory', name: 'Crucial T700 2TB Gen5 NVMe M.2 SSD (12,400MB/s)', brand: 'Crucial', price: 8990, originalPrice: 9990, badge: 'NEW', rating: 4.8, reviews: 52, stock: 10, specsSummary: ['12,400 MB/s 狂暴速度', 'Gen5 飆速', '雙面散熱裝甲'], specsDetail: { '介面': 'PCIe Gen5 x4', '讀取': '12,400 MB/s' }, desc: '進入 Gen5 飆速新紀元！讀取衝破 12GB/s，遊戲載入瞬間完成。' },
+      { id: 30, category: 'memory', name: 'WD Black SN850X 4TB Gaming NVMe SSD', brand: 'WD Black', price: 10990, originalPrice: 12500, badge: 'BEST', rating: 4.9, reviews: 88, stock: 8, specsSummary: ['4TB 超大容量', 'Game Mode 2.0', '7300 MB/s'], specsDetail: { '容量': '4TB', '讀寫': '7300/6600 MB/s' }, desc: '黑標專為玩家打造，超大 4TB 空間輕鬆裝下數十款 3A 大作。' },
+      { id: 31, category: 'memory', name: 'Team Group T-Force Delta RGB DDR5-6000 32GB', brand: 'Team Group', price: 3490, originalPrice: 3890, badge: 'SALE', rating: 4.6, reviews: 95, stock: 40, specsSummary: ['120° 超廣角RGB', '矽膠散熱導熱膏', '高CP值'], specsDetail: { '容量': '32GB (16Gx2)', '頻率': '6000MHz' }, desc: '全幅式 120° 超廣角發光頂蓋，高CP值的 DDR5 RGB 記憶體首選。' },
+      { id: 32, category: 'memory', name: 'Seagate FireCuda 530 2TB PCIe Gen4 NVMe SSD', brand: 'Seagate', price: 5290, originalPrice: 5890, badge: 'BEST', rating: 4.8, reviews: 110, stock: 14, specsSummary: ['EKWB 聯名散熱器', '2550 TBW 耐用度', '含 Rescue 資料救援'], specsDetail: { '耐寫量': '2550 TBW', '保固': '5年+3年資料救援' }, desc: '與 EKWB 聯名設計極致散熱，隨附原廠 3 年免費資料救援服務。' },
+
+      // 電源/機殼 PSU & Case (7)
+      { id: 33, category: 'psu_case', name: 'ASUS ROG Thor 1200W Platinum II ATX 3.0 全模組', brand: 'ASUS ROG', price: 11990, originalPrice: 12900, badge: 'HOT', rating: 4.9, reviews: 62, stock: 7, specsSummary: ['OLED 實時功率顯示', '12VHPWR 原生線', '80 PLUS 白金'], specsDetail: { '瓦數': '1200W', '認證': '80 PLUS Platinum', '風扇': '135mm Wing-Blade' }, desc: '機身側邊配備 OLED 面板即時顯示耗電瓦數，完美支援 RTX 4090。' },
+      { id: 34, category: 'psu_case', name: 'Corsair RM1000e 1000W 80+ Gold 金牌全模組', brand: 'Corsair', price: 5290, originalPrice: 5890, badge: 'BEST', rating: 4.8, reviews: 190, stock: 25, specsSummary: ['ATX 3.0 相容', '105°C 日系電容', '精巧長度 140mm'], specsDetail: { '瓦數': '1000W', '認證': '80 PLUS Gold' }, desc: '海盜船金牌品質，極低噪音風扇模式與長度僅 140mm 易於走線。' },
+      { id: 35, category: 'psu_case', name: 'Seasonic FOCUS GX-850 ATX 3.0 850W 金牌', brand: 'Seasonic', price: 4290, originalPrice: 4690, badge: 'SALE', rating: 4.9, reviews: 240, stock: 30, specsSummary: ['10年原廠保固', '智能溫控風扇', '全模組線材'], specsDetail: { '瓦數': '850W', '保固': '10年換新' }, desc: '海韻經典 FOCUS 系列，十年安心保固與業界傳奇的穩定電壓。' },
+      { id: 36, category: 'psu_case', name: 'Lian Li O11 Vision 雙面全景無界玻璃機殼 (黑)', brand: 'Lian Li', price: 4390, originalPrice: 4790, badge: 'HOT', rating: 4.9, reviews: 175, stock: 12, specsSummary: ['無前柱 270° 無界海景', '三面強化玻璃', '頂級走線空間'], specsDetail: { '支援主板': 'E-ATX/ATX/M-ATX', '顯卡限長': '455mm' }, desc: '聯力與 PCMR 聯名打造，無前柱三面無界玻璃，硬體展示極致殿堂。' },
+      { id: 37, category: 'psu_case', name: 'HYTE Y70 Touch 全景三面玻璃電競機殼 (含觸控螢幕)', brand: 'HYTE', price: 11990, originalPrice: 12900, badge: 'LIMITED', rating: 5.0, reviews: 40, stock: 3, specsSummary: ['14.1吋 4K 觸控螢幕', '豎豎顯卡直立', '全景視野'], specsDetail: { '螢幕 resolution': '1100x3840 (4K Touch)', ' PCIe 轉接線': '包含 PCIe 4.0' }, desc: '角落嵌入 14.1 吋 4K 觸控屏幕，可自訂動態桌布與即時系統監控。' },
+      { id: 38, category: 'psu_case', name: 'Fractal Design North Charcoal Black 質感木紋機殼', brand: 'Fractal Design', price: 4990, originalPrice: 5390, badge: 'BEST', rating: 4.9, reviews: 128, stock: 9, specsSummary: ['胡桃木格柵前板', '極簡北歐美學', '優異氣流'], specsDetail: { '前板': '真品胡桃木', '鋼化玻璃': '側透黑化' }, desc: '融合真品胡桃木家具工藝，為硬體配備注入奢華典雅的北歐居家氣息。' },
+      { id: 39, category: 'psu_case', name: 'NZXT H9 Elite 全景雙腔玻璃展示機殼 (白)', brand: 'NZXT', price: 7990, originalPrice: 8590, badge: 'HOT', rating: 4.8, reviews: 85, stock: 8, specsSummary: ['全無縫玻璃頂板', '隨附 RGB 風扇與控制器', '雙腔散熱'], specsDetail: { '風扇': '隨附 3x F120 RGB Duo + 1x 120mm' }, desc: 'NZXT 旗艦海景房，透明玻璃頂蓋與側板讓 RGB 燈效無死角綻放。' },
+
+      // 散熱/螢幕 Coolers & Monitors (7)
+      { id: 40, category: 'cooling_monitor', name: 'ROG RYUJIN III 360 ARGB 磁吸水冷 (2.1吋 LCD螢幕)', brand: 'ASUS ROG', price: 10990, originalPrice: 11900, badge: 'HOT', rating: 4.9, reviews: 98, stock: 8, specsSummary: ['2.1吋 60Hz LCD', 'Asetek 8代水泵', '磁吸串接風扇'], specsDetail: { '水泵': 'Asetek 8th Gen', '風扇': 'ROG Magnetic Daisy-Chain' }, desc: '龍神三代水冷，水冷頭嵌入 2.1 吋彩色 LCD 螢幕，可播放 GIF 動圖與系統數據。' },
+      { id: 41, category: 'cooling_monitor', name: 'NZXT Kraken Elite 360 RGB 一體式水冷散熱器', brand: 'NZXT', price: 9990, originalPrice: 10800, badge: 'BEST', rating: 4.8, reviews: 112, stock: 12, specsSummary: ['2.36吋 廣角 LCD', '640x640 高解析', 'CAM 軟體整合'], specsDetail: { '冷排尺寸': '360mm', '保固': '6年原廠保固' }, desc: '廣角高解析度圓形 LCD 螢幕，呈現細緻動態 GIF 與 CPU 實時溫度。' },
+      { id: 42, category: 'cooling_monitor', name: 'Noctua NH-D15 G2 雙塔雙風扇頂級空冷散熱器', brand: 'Noctua', price: 4990, originalPrice: 5390, badge: 'BEST', rating: 5.0, reviews: 165, stock: 15, specsSummary: ['次世代貓頭鷹風扇', '8熱導管', '空冷王者'], specsDetail: { '風扇': '2x NF-A14x25r G2', '保固': '6年' }, desc: '貓頭鷹歷時多年研發 G2 次世代空冷旗艦，解熱能力可逼近 360 水冷。' },
+      { id: 43, category: 'cooling_monitor', name: 'ASUS ROG Swift OLED PG32UCDM 32吋 4K 240Hz', brand: 'ASUS ROG', price: 42900, originalPrice: 45900, badge: 'HOT', rating: 5.0, reviews: 45, stock: 4, specsSummary: ['4K QD-OLED', '240Hz 刷新率', '0.03ms 反應'], specsDetail: { '面板': '32吋 QD-OLED', '解析度': '3840x2160', 'HDR': 'DisplayHDR True Black 400' }, desc: '夢幻頂級電競螢幕，QD-OLED 震撼純黑與 240Hz 絕倫流暢度。' },
+      { id: 44, category: 'cooling_monitor', name: 'MSI MAG 274UPF 27吋 4K 144Hz Rapid IPS 螢幕', brand: 'MSI', price: 12900, originalPrice: 14900, badge: 'SALE', rating: 4.7, reviews: 130, stock: 20, specsSummary: ['4K 144Hz', 'Rapid IPS 1ms', 'Type-C 65W PD'], specsDetail: { '解析度': '3840x2160', '介面': 'HDMI 2.1 x2, DP 1.4, Type-C' }, desc: '高性價比 4K 144Hz 螢幕，兼具 Type-C 筆電一線連線與 65W 充電。' },
+      { id: 45, category: 'cooling_monitor', name: 'Samsung Odyssey OLED G9 49吋 240Hz 曲面螢幕', brand: 'Samsung', price: 39900, originalPrice: 44900, badge: 'LIMITED', rating: 4.9, reviews: 38, stock: 3, specsSummary: ['49吋 32:9 超寬曲面', 'DQHD (5120x1440)', '0.03ms'], specsDetail: { '曲率': '1800R', '刷新率': '240Hz' }, desc: '雙 2K 震撼環繞視野， Neo Quantum 處理器給予極致影音沉浸感。' },
+      { id: 46, category: 'cooling_monitor', name: 'LG UltraGear 34GS95QE 34吋 WQHD OLED 240Hz 曲面', brand: 'LG', price: 32900, originalPrice: 35900, badge: 'NEW', rating: 4.8, reviews: 29, stock: 6, specsSummary: ['800R 極致曲率', '240Hz OLED', 'DisplayHDR True Black'], specsDetail: { '解析度': '3440x1440', '曲率': '800R' }, desc: '800R 大曲率完美包覆人眼視覺，專業電競沉浸體驗升級首選。' },
+
+      // 週邊配件 Peripherals (6)
+      { id: 47, category: 'peripheral', name: 'Razer DeathAdder V3 Pro 超輕量無線電競滑鼠', brand: 'Razer', price: 4490, originalPrice: 4990, badge: 'BEST', rating: 4.9, reviews: 280, stock: 22, specsSummary: ['63g 人體工學極輕', 'Focus Pro 30K 感應器', '90小時續航'], specsDetail: { '重量': '63g', '微動': '第三代光學滑鼠微動' }, desc: 'FPS 職業選手第一選擇，63 毫克輕巧身軀搭配完美人體工學握感。' },
+      { id: 48, category: 'peripheral', name: 'Logitech G PRO X 2 LIGHTSPEED 無線機械電競鍵盤', brand: 'Logitech G', price: 6990, originalPrice: 7590, badge: 'HOT', rating: 4.8, reviews: 190, stock: 16, specsSummary: ['石墨烯驅動單體', 'LIGHTSPEED 無線', 'PBT 鍵帽'], specsDetail: { '連接': 'LIGHTSPEED / 藍牙 / USB', '軸體': 'GX 軸體' }, desc: '羅技旗艦職業級戰場連線，持久續航與極致靈敏的鍵擊回饋。' },
+      { id: 49, category: 'peripheral', name: 'SteelSeries Arctis Nova Pro Wireless 無線雙模耳機', brand: 'SteelSeries', price: 11990, originalPrice: 12900, badge: 'HOT', rating: 4.9, reviews: 105, stock: 10, specsSummary: ['ANC 主動降噪', '雙電池熱插拔', 'OLED 基座'], specsDetail: { '降噪': '四麥克風主動降噪', '無線': '2.4GHz + 藍牙同時連線' }, desc: '電競耳機界頂級天花板，無限續航雙電池替換系統與頂級 ANC 降噪。' },
+      { id: 50, category: 'peripheral', name: 'Wooting 60HE 磁軸極速電競機械鍵盤', brand: 'Wooting', price: 6890, originalPrice: 7500, badge: 'LIMITED', rating: 5.0, reviews: 310, stock: 5, specsSummary: ['磁軸 Rapid Trigger', '0.1mm 觸發可調', '急停神煞'], specsDetail: { '軸體': 'Lekker 磁軸', '鍵位': '60% 緊湊配置' }, desc: '瓦羅蘭與 FPS 遊戲急停神器！獨家 Rapid Trigger 磁軸技術秒殺傳統機械軸。' },
+      { id: 51, category: 'peripheral', name: 'Elgato Stream Deck MK.2 15鍵實況控制台', brand: 'Elgato', price: 4790, originalPrice: 5290, badge: 'BEST', rating: 4.8, reviews: 145, stock: 18, specsSummary: ['15 個可自訂 LCD 按鍵', '一鍵巨集自動化', '實況主必備'], specsDetail: { '按鍵': '15 x 自訂 LCD', '接頭': 'USB 2.0 Type-C' }, desc: '實況主與生產力工作者必備神物，一鍵切換場景、播放音效與啟動巨集。' },
+      { id: 52, category: 'peripheral', name: 'ROG Balteus Qi 無線充電 15區 RGB 硬質滑鼠墊', brand: 'ASUS ROG', price: 3490, originalPrice: 3990, badge: 'SALE', rating: 4.7, reviews: 75, stock: 14, specsSummary: ['Qi 無線充電', '15 區 Aura Sync RGB', '直立式大面積'], specsDetail: { '尺寸': '370 x 320 mm', '充電': 'Qi 快速無線充電' }, desc: '邊玩遊戲邊為手機無線充電，15 區獨立可調 Aura Sync RGB 霓虹光暈。' }
+    ];
+
+    // State Management
+    let currentCategory = 'all';
+    let searchQuery = '';
+    let maxPrice = 80000;
+    let sortBy = 'featured';
+    let cart = JSON.parse(localStorage.getItem('techforge_cart') || '[]');
+    let modalQuantity = 1;
+    let activeCoupon = null;
+
+    // Coupons definition
+    const VALID_COUPONS = {
+      'TECH2026': { type: 'fixed', value: 2000, minSpend: 20000, desc: '滿 $20,000 折 $2,000' },
+      'GAMER1000': { type: 'fixed', value: 1000, minSpend: 10000, desc: '滿 $10,000 折 $1,000' },
+      'VIP500': { type: 'fixed', value: 500, minSpend: 5000, desc: '滿 $5,000 折 $500' }
+    };
+
+    // Dynamic Tech Product SVG Generator
+    function generateProductSVG(category, name) {
+      if (category === 'gpu') {
+        return `
+          <svg viewBox="0 0 200 120" class="w-full h-full drop-shadow-[0_0_12px_rgba(0,243,255,0.3)]">
+            <rect x="15" y="25" width="170" height="70" rx="8" fill="#0f172a" stroke="#00f3ff" stroke-width="1.5"/>
+            <rect x="25" y="35" width="150" height="50" rx="5" fill="#131c31" stroke="#334155"/>
+            <circle cx="55" cy="60" r="18" fill="#090d16" stroke="#a855f7" stroke-width="2"/>
+            <circle cx="100" cy="60" r="18" fill="#090d16" stroke="#a855f7" stroke-width="2"/>
+            <circle cx="145" cy="60" r="18" fill="#090d16" stroke="#a855f7" stroke-width="2"/>
+            <line x1="55" y1="42" x2="55" y2="78" stroke="#00f3ff" stroke-width="1.5"/>
+            <line x1="100" y1="42" x2="100" y2="78" stroke="#00f3ff" stroke-width="1.5"/>
+            <line x1="145" y1="42" x2="145" y2="78" stroke="#00f3ff" stroke-width="1.5"/>
+            <rect x="35" y="95" width="130" height="6" fill="#eab308" rx="1"/>
+          </svg>`;
+      } else if (category === 'cpu') {
+        return `
+          <svg viewBox="0 0 160 140" class="w-full h-full drop-shadow-[0_0_12px_rgba(168,85,247,0.3)]">
+            <rect x="25" y="15" width="110" height="110" rx="6" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+            <rect x="40" y="30" width="80" height="80" rx="4" fill="#0f172a" stroke="#00f3ff" stroke-width="1.5"/>
+            <rect x="55" y="45" width="50" height="50" rx="2" fill="#1e293b" stroke="#e2e8f0" stroke-width="1"/>
+            <text x="80" y="74" text-anchor="middle" fill="#00f3ff" font-family="Orbitron" font-size="10" font-weight="bold">CORE</text>
+            <!-- Pin Dots -->
+            <circle cx="32" cy="22" r="1.5" fill="#eab308"/>
+            <circle cx="128" cy="22" r="1.5" fill="#eab308"/>
+            <circle cx="32" cy="118" r="1.5" fill="#eab308"/>
+            <circle cx="128" cy="118" r="1.5" fill="#eab308"/>
+          </svg>`;
+      } else if (category === 'mb') {
+        return `
+          <svg viewBox="0 0 180 140" class="w-full h-full drop-shadow-[0_0_12px_rgba(59,130,246,0.3)]">
+            <rect x="15" y="10" width="150" height="120" rx="6" fill="#090d16" stroke="#3b82f6" stroke-width="2"/>
+            <rect x="30" y="25" width="45" height="45" fill="#1e293b" stroke="#00f3ff" stroke-width="1.5"/>
+            <!-- RAM Slots -->
+            <rect x="90" y="20" width="6" height="55" fill="#a855f7"/>
+            <rect x="100" y="20" width="6" height="55" fill="#00f3ff"/>
+            <rect x="110" y="20" width="6" height="55" fill="#a855f7"/>
+            <rect x="120" y="20" width="6" height="55" fill="#00f3ff"/>
+            <!-- PCIe Slots -->
+            <rect x="30" y="85" width="110" height="8" fill="#1e293b" stroke="#00f3ff" stroke-width="1"/>
+            <rect x="30" y="102" width="110" height="6" fill="#1e293b" stroke="#64748b"/>
+          </svg>`;
+      } else if (category === 'memory') {
+        return `
+          <svg viewBox="0 0 180 100" class="w-full h-full drop-shadow-[0_0_12px_rgba(236,72,153,0.3)]">
+            <!-- Dual RAM sticks -->
+            <rect x="20" y="20" width="140" height="28" rx="3" fill="#1e293b" stroke="#ec4899" stroke-width="1.5"/>
+            <rect x="20" y="18" width="140" height="6" fill="#00f3ff" rx="1"/>
+            <rect x="20" y="55" width="140" height="28" rx="3" fill="#1e293b" stroke="#a855f7" stroke-width="1.5"/>
+            <rect x="20" y="53" width="140" height="6" fill="#ec4899" rx="1"/>
+            <!-- Pins -->
+            <line x1="30" y1="48" x2="150" y2="48" stroke="#eab308" stroke-dasharray="3 2" stroke-width="2"/>
+            <line x1="30" y1="83" x2="150" y2="83" stroke="#eab308" stroke-dasharray="3 2" stroke-width="2"/>
+          </svg>`;
+      } else if (category === 'psu_case') {
+        return `
+          <svg viewBox="0 0 150 140" class="w-full h-full drop-shadow-[0_0_12px_rgba(0,243,255,0.3)]">
+            <rect x="25" y="15" width="100" height="110" rx="8" fill="#0f172a" stroke="#00f3ff" stroke-width="2"/>
+            <rect x="35" y="25" width="80" height="70" rx="4" fill="none" stroke="#38bdf8" stroke-dasharray="4 2"/>
+            <circle cx="75" cy="60" r="22" stroke="#a855f7" stroke-width="1.5" fill="none"/>
+            <path d="M 75 38 L 75 82 M 53 60 L 97 60" stroke="#00f3ff" stroke-width="1"/>
+            <rect x="35" y="102" width="80" height="12" rx="2" fill="#1e293b" stroke="#00f3ff" stroke-width="1"/>
+          </svg>`;
+      } else if (category === 'cooling_monitor') {
+        return `
+          <svg viewBox="0 0 180 130" class="w-full h-full drop-shadow-[0_0_12px_rgba(168,85,247,0.3)]">
+            <!-- Curved Monitor -->
+            <path d="M 20 25 Q 90 15 160 25 L 155 85 Q 90 75 25 85 Z" fill="#0f172a" stroke="#a855f7" stroke-width="2"/>
+            <path d="M 25 30 Q 90 22 155 30 L 150 80 Q 90 72 30 80 Z" fill="#1e293b"/>
+            <!-- Stand -->
+            <path d="M 90 82 L 90 108 M 70 115 L 90 108 L 110 115" stroke="#00f3ff" stroke-width="2.5" fill="none"/>
+            <text x="90" y="58" text-anchor="middle" fill="#00f3ff" font-family="Orbitron" font-size="9">OLED 240Hz</text>
+          </svg>`;
+      } else {
+        return `
+          <svg viewBox="0 0 160 120" class="w-full h-full drop-shadow-[0_0_12px_rgba(0,243,255,0.3)]">
+            <!-- Gaming Mouse / Keyboard -->
+            <path d="M 50 30 C 50 15, 110 15, 110 30 L 110 80 C 110 98, 50 98, 50 80 Z" fill="#0f172a" stroke="#00f3ff" stroke-width="2"/>
+            <line x1="80" y1="20" x2="80" y2="45" stroke="#a855f7" stroke-width="2"/>
+            <circle cx="80" cy="35" r="4" fill="#00f3ff"/>
+            <path d="M 50 60 Q 80 75 110 60" stroke="#a855f7" stroke-width="1.5" fill="none"/>
+          </svg>`;
+      }
+    }
+
+    // Initialize Page & Category Pills
+    function initApp() {
+      renderCategoryPills();
+      renderProducts();
+      updateCartUI();
+      setupParticleCanvas();
+    }
+
+    function renderCategoryPills() {
+      const categories = [
+        { key: 'all', label: '全部商品', icon: 'fa-layer-group' },
+        { key: 'gpu', label: '顯示卡 (GPU)', icon: 'fa-tv' },
+        { key: 'cpu', label: '中央處理器 (CPU)', icon: 'fa-microchip' },
+        { key: 'mb', label: '主機板 (MB)', icon: 'fa-chess-board' },
+        { key: 'memory', label: '記憶體 / SSD', icon: 'fa-memory' },
+        { key: 'psu_case', label: '電源 / 機殼', icon: 'fa-plug' },
+        { key: 'cooling_monitor', label: '散熱 / 電競螢幕', icon: 'fa-fan' },
+        { key: 'peripheral', label: '週邊配件', icon: 'fa-gamepad' }
+      ];
+
+      const container = document.getElementById('categoryPills');
+      container.innerHTML = categories.map(cat => `
+        <button onclick="filterByCategory('${cat.key}')" 
+          class="category-btn flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-medium font-tech transition-all duration-300 ${
+            currentCategory === cat.key 
+              ? 'bg-gradient-to-r from-cyber-cyan to-blue-600 text-cyber-black font-bold shadow-neon-cyan scale-105' 
+              : 'bg-slate-900 border border-slate-800 text-slate-300 hover:border-cyber-cyan/50 hover:text-white'
+          }">
+          <i class="fa-solid ${cat.icon}"></i>
+          <span>${cat.label}</span>
+        </button>
+      `).join('');
+    }
+
+    function filterByCategory(catKey) {
+      currentCategory = catKey;
+      renderCategoryPills();
+      renderProducts();
+    }
+
+    function handleSearch(isMobile = false) {
+      const inputId = isMobile ? 'mobileSearchInput' : 'searchInput';
+      searchQuery = document.getElementById(inputId).value.trim().toLowerCase();
+      
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (searchQuery.length > 0) {
+        clearBtn?.classList.remove('hidden');
+      } else {
+        clearBtn?.classList.add('hidden');
+      }
+      renderProducts();
+    }
+
+    function clearSearch() {
+      searchQuery = '';
+      document.getElementById('searchInput').value = '';
+      document.getElementById('mobileSearchInput').value = '';
+      document.getElementById('clearSearchBtn').classList.add('hidden');
+      renderProducts();
+    }
+
+    function handlePriceFilter(val) {
+      maxPrice = parseInt(val);
+      document.getElementById('priceValue').innerText = `NT$ ${maxPrice.toLocaleString()}`;
+      renderProducts();
+    }
+
+    function handleSortChange(val) {
+      sortBy = val;
+      renderProducts();
+    }
+
+    function resetFilters() {
+      currentCategory = 'all';
+      searchQuery = '';
+      maxPrice = 80000;
+      sortBy = 'featured';
+      document.getElementById('priceRange').value = 80000;
+      document.getElementById('priceValue').innerText = 'NT$ 80,000';
+      document.getElementById('sortSelect').value = 'featured';
+      clearSearch();
+      renderCategoryPills();
+      renderProducts();
+    }
+
+    // Filter & Sort Logic
+    function getFilteredProducts() {
+      return PRODUCTS.filter(p => {
+        const matchesCategory = (currentCategory === 'all' || p.category === currentCategory);
+        const matchesSearch = searchQuery === '' || 
+          p.name.toLowerCase().includes(searchQuery) || 
+          p.brand.toLowerCase().includes(searchQuery) ||
+          p.specsSummary.some(s => s.toLowerCase().includes(searchQuery));
+        const matchesPrice = p.price <= maxPrice;
+        return matchesCategory && matchesSearch && matchesPrice;
+      }).sort((a, b) => {
+        if (sortBy === 'price-low') return a.price - b.price;
+        if (sortBy === 'price-high') return b.price - a.price;
+        if (sortBy === 'rating') return b.rating - a.rating;
+        return a.id - b.id; // Featured default
+      });
+    }
+
+    // Render Products Grid
+    function renderProducts() {
+      const filtered = getFilteredProducts();
+      const grid = document.getElementById('productGrid');
+      const noResults = document.getElementById('noResults');
+      document.getElementById('productCount').innerText = filtered.length;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        noResults.classList.remove('hidden');
+        return;
+      }
+
+      noResults.classList.add('hidden');
+      grid.innerHTML = filtered.map(p => `
+        <div class="cyber-card group relative bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-cyber-cyan/60 p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-neon-cyan">
+          
+          <!-- Top Badge -->
+          <div class="flex justify-between items-start mb-3">
+            <span class="text-[10px] font-bold font-tech px-2.5 py-1 rounded-md uppercase tracking-wider ${getBadgeStyle(p.badge)}">
+              ${p.badge}
+            </span>
+            <div class="flex items-center space-x-1 text-xs text-amber-400 font-tech">
+              <i class="fa-solid fa-star"></i>
+              <span>${p.rating} (${p.reviews})</span>
+            </div>
+          </div>
+
+          <!-- Clickable Image Container -->
+          <div onclick="openSpecsModal(${p.id})" class="product-image-box h-44 bg-cyber-black/80 rounded-xl p-3 flex items-center justify-center cursor-pointer relative overflow-hidden group-hover:bg-slate-950 transition-colors scanline">
+            <div class="w-full h-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-500">
+              ${generateProductSVG(p.category, p.name)}
+            </div>
+            <!-- Quick View Hover Overlay Tag -->
+            <div class="absolute inset-0 bg-cyber-black/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
+              <span class="px-3 py-1.5 rounded-lg bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan text-xs font-tech font-bold">
+                <i class="fa-solid fa-eye mr-1"></i>查看詳細規格
+              </span>
+            </div>
+          </div>
+
+          <!-- Details -->
+          <div class="mt-4 flex-1 flex flex-col justify-between space-y-3">
+            <div>
+              <span class="text-[10px] font-tech text-cyber-cyan font-bold tracking-wider">${p.brand}</span>
+              <h3 onclick="openSpecsModal(${p.id})" class="text-sm font-bold text-white group-hover:text-cyber-cyan transition-colors cursor-pointer line-clamp-2 mt-0.5 leading-snug">
+                ${p.name}
+              </h3>
+            </div>
+
+            <!-- Specs Summary Tags -->
+            <div class="flex flex-wrap gap-1.5">
+              ${p.specsSummary.map(tag => `
+                <span class="text-[10px] bg-slate-800 border border-slate-700/80 text-slate-300 px-2 py-0.5 rounded-md">${tag}</span>
+              `).join('')}
+            </div>
+
+            <!-- Price & Action Buttons -->
+            <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between">
+              <div>
+                <div class="text-xs text-slate-500 line-through font-tech">NT$ ${p.originalPrice.toLocaleString()}</div>
+                <div class="text-lg font-tech font-extrabold text-cyber-cyan">NT$ ${p.price.toLocaleString()}</div>
+              </div>
+
+              <div class="flex items-center space-x-2">
+                <!-- Add to Cart with Flying Animation -->
+                <button onclick="handleAddToCart(event, ${p.id})" 
+                  class="p-2.5 rounded-xl bg-slate-800 hover:bg-cyber-cyan hover:text-cyber-black border border-slate-700 hover:border-cyber-cyan text-slate-200 transition-all duration-300 shadow-md relative overflow-hidden group/btn" title="加入購物車">
+                  <i class="fa-solid fa-cart-plus text-sm"></i>
+                </button>
+                <!-- Buy Now Button -->
+                <button onclick="handleBuyNow(event, ${p.id})" 
+                  class="px-3 py-2 rounded-xl bg-gradient-to-r from-cyber-cyan to-blue-600 text-cyber-black font-bold font-tech text-xs tracking-wider shadow-neon-cyan hover:brightness-110 transition-all">
+                  購買
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      `).join('');
+    }
+
+    function getBadgeStyle(badge) {
+      switch(badge) {
+        case 'HOT': return 'bg-rose-500/20 text-rose-400 border border-rose-500/40';
+        case 'SALE': return 'bg-amber-500/20 text-amber-400 border border-amber-500/40';
+        case 'BEST': return 'bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40';
+        case 'LIMITED': return 'bg-purple-500/20 text-purple-400 border border-purple-500/40';
+        default: return 'bg-blue-500/20 text-blue-400 border border-blue-500/40';
+      }
+    }
+
+    // Dynamic Particle Explosion & Visual Effects Engine
+    function setupParticleCanvas() {
+      const canvas = document.getElementById('particleCanvas');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      class Particle {
+        constructor(x, y) {
+          this.x = x;
+          this.y = y;
+          this.size = Math.random() * 4 + 2;
+          this.speedX = (Math.random() - 0.5) * 12;
+          this.speedY = (Math.random() - 0.5) * 12 - 2;
+          this.color = Math.random() > 0.5 ? '#00f3ff' : '#a855f7';
+          this.alpha = 1;
+          this.decay = Math.random() * 0.03 + 0.015;
+        }
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+          this.speedY += 0.2; // Gravity
+          this.alpha -= this.decay;
+        }
+        draw() {
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, this.alpha);
+          ctx.fillStyle = this.color;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = this.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      window.triggerSparkBurst = function(x, y) {
+        for (let i = 0; i < 25; i++) {
+          particles.push(new Particle(x, y));
+        }
+      };
+
+      function loop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = particles.length - 1; i >= 0; i--) {
+          particles[i].update();
+          particles[i].draw();
+          if (particles[i].alpha <= 0) {
+            particles.splice(i, 1);
+          }
+        }
+        requestAnimationFrame(loop);
+      }
+      loop();
+    }
+
+    // Trigger Flying Image to Cart Animation
+    function triggerFlyingItem(sourceElem) {
+      if (!sourceElem) return;
+      const rect = sourceElem.getBoundingClientRect();
+      const cartBtn = document.getElementById('cartBtn');
+      const cartRect = cartBtn.getBoundingClientRect();
+
+      const flyer = document.createElement('div');
+      flyer.className = 'flying-item';
+      flyer.style.left = `${rect.left}px`;
+      flyer.style.top = `${rect.top}px`;
+      flyer.style.width = `${rect.width}px`;
+      flyer.style.height = `${rect.height}px`;
+      flyer.innerHTML = sourceElem.innerHTML;
+
+      document.body.appendChild(flyer);
+
+      requestAnimationFrame(() => {
+        flyer.style.left = `${cartRect.left + 10}px`;
+        flyer.style.top = `${cartRect.top + 10}px`;
+        flyer.style.width = '30px';
+        flyer.style.height = '30px';
+        flyer.style.opacity = '0.2';
+        flyer.style.transform = 'scale(0.2) rotate(360deg)';
+      });
+
+      setTimeout(() => {
+        flyer.remove();
+        // Cart icon bounce animation
+        const cartBadge = document.getElementById('cartBadge');
+        cartBtn.classList.add('cart-bump');
+        cartBadge.classList.add('scale-125');
+        setTimeout(() => {
+          cartBtn.classList.remove('cart-bump');
+          cartBadge.classList.remove('scale-125');
+        }, 500);
+      }, 750);
+    }
+
+    // Floating "+1" Animation
+    function triggerFloatingText(x, y, text = "+1") {
+      const elem = document.createElement('div');
+      elem.className = 'floating-plus-one';
+      elem.innerText = text;
+      elem.style.left = `${x - 15}px`;
+      elem.style.top = `${y - 20}px`;
+      document.body.appendChild(elem);
+      setTimeout(() => elem.remove(), 850);
+    }
+
+    // Ripple effect on button click
+    function createRipple(e, target) {
+      const circle = document.createElement('span');
+      const diameter = Math.max(target.clientWidth, target.clientHeight);
+      const radius = diameter / 2;
+      const rect = target.getBoundingClientRect();
+
+      circle.style.width = circle.style.height = `${diameter}px`;
+      circle.style.left = `${e.clientX - rect.left - radius}px`;
+      circle.style.top = `${e.clientY - rect.top - radius}px`;
+      circle.classList.add('ripple');
+
+      const ripple = target.getElementsByClassName('ripple')[0];
+      if (ripple) ripple.remove();
+
+      target.appendChild(circle);
+    }
+
+    // Add To Cart Handlers
+    function handleAddToCart(e, productId, qty = 1) {
+      createRipple(e, e.currentTarget);
+      window.triggerSparkBurst(e.clientX, e.clientY);
+      triggerFloatingText(e.clientX, e.clientY, `+${qty}`);
+
+      const card = e.currentTarget.closest('.cyber-card') || document.getElementById('specsModalContent');
+      const imgBox = card ? card.querySelector('.product-image-box') : null;
+      if (imgBox) triggerFlyingItem(imgBox);
+
+      addToCartState(productId, qty);
+      showToast('成功加入購物車！', 'success');
+    }
+
+    function quickAddToCart(productId) {
+      addToCartState(productId, 1);
+      const cartBtn = document.getElementById('cartBtn');
+      cartBtn.classList.add('cart-bump');
+      setTimeout(() => cartBtn.classList.remove('cart-bump'), 500);
+      showToast('已快捷將產品加入購物車！', 'success');
+    }
+
+    function handleBuyNow(e, productId) {
+      handleAddToCart(e, productId, 1);
+      setTimeout(() => {
+        toggleCartDrawer(true);
+      }, 400);
+    }
+
+    function addToCartState(productId, qty = 1) {
+      const existing = cart.find(item => item.id === productId);
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        cart.push({ id: productId, qty: qty });
+      }
+      saveCart();
+      updateCartUI();
+    }
+
+    function updateCartQty(productId, delta) {
+      const item = cart.find(i => i.id === productId);
+      if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) {
+          cart = cart.filter(i => i.id !== productId);
+        }
+        saveCart();
+        updateCartUI();
+      }
+    }
+
+    function removeFromCart(productId) {
+      cart = cart.filter(i => i.id !== productId);
+      saveCart();
+      updateCartUI();
+      showToast('已從購物車移除項目', 'info');
+    }
+
+    function clearCart() {
+      if (cart.length === 0) return;
+      cart = [];
+      saveCart();
+      updateCartUI();
+      showToast('購物車已全部清空', 'info');
+    }
+
+    function saveCart() {
+      localStorage.setItem('techforge_cart', JSON.stringify(cart));
+    }
+
+    // Calculate Totals & Render Cart Drawer UI
+    function updateCartUI() {
+      const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cartBadge').innerText = totalCount;
+
+      const container = document.getElementById('cartItemsContainer');
+      const emptyView = document.getElementById('emptyCartView');
+
+      if (cart.length === 0) {
+        container.innerHTML = '';
+        emptyView.classList.remove('hidden');
+      } else {
+        emptyView.classList.add('hidden');
+        container.innerHTML = cart.map(item => {
+          const product = PRODUCTS.find(p => p.id === item.id);
+          if (!product) return '';
+          return `
+            <div class="bg-slate-950/80 rounded-2xl p-3 border border-slate-800 flex items-center space-x-3 relative group">
+              <div class="w-16 h-16 bg-slate-900 rounded-xl p-1.5 flex items-center justify-center border border-slate-800 shrink-0">
+                ${generateProductSVG(product.category, product.name)}
+              </div>
+              <div class="flex-1 min-w-0 space-y-1">
+                <h4 class="text-xs font-bold text-white truncate">${product.name}</h4>
+                <div class="text-xs font-tech text-cyber-cyan font-extrabold">NT$ ${product.price.toLocaleString()}</div>
+                
+                <!-- Qty Control -->
+                <div class="flex items-center space-x-2 pt-1">
+                  <div class="flex items-center border border-slate-700 bg-slate-800 rounded-lg overflow-hidden">
+                    <button onclick="updateCartQty(${product.id}, -1)" class="px-2 py-0.5 text-slate-400 hover:text-white">
+                      <i class="fa-solid fa-minus text-[10px]"></i>
+                    </button>
+                    <span class="px-2.5 text-xs font-tech font-bold text-white">${item.qty}</span>
+                    <button onclick="updateCartQty(${product.id}, 1)" class="px-2 py-0.5 text-slate-400 hover:text-white">
+                      <i class="fa-solid fa-plus text-[10px]"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Delete Button -->
+              <button onclick="removeFromCart(${product.id})" class="text-slate-500 hover:text-red-400 p-2 transition-colors">
+                <i class="fa-solid fa-trash-can text-sm"></i>
+              </button>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Calculations
+      const subtotal = cart.reduce((sum, item) => {
+        const product = PRODUCTS.find(p => p.id === item.id);
+        return sum + (product ? product.price * item.qty : 0);
+      }, 0);
+
+      // Free shipping threshold ($30,000)
+      const freeShippingThreshold = 30000;
+      const shippingCost = (subtotal >= freeShippingThreshold || subtotal === 0) ? 0 : 250;
+      const shippingBar = document.getElementById('shippingProgressBar');
+      const shippingText = document.getElementById('shippingStatusText');
+
+      if (subtotal >= freeShippingThreshold) {
+        shippingBar.style.width = '100%';
+        shippingText.innerText = '已達成全館免運！';
+        shippingText.className = 'font-tech text-emerald-400 font-bold';
+      } else {
+        const pct = Math.min(100, (subtotal / freeShippingThreshold) * 100);
+        shippingBar.style.width = `${pct}%`;
+        const diff = freeShippingThreshold - subtotal;
+        shippingText.innerText = `還差 NT$ ${diff.toLocaleString()} 免運`;
+        shippingText.className = 'font-tech text-cyber-cyan font-bold';
+      }
+
+      // Discount calculation
+      let discountAmount = 0;
+      if (activeCoupon) {
+        if (subtotal >= activeCoupon.minSpend) {
+          discountAmount = activeCoupon.value;
+        } else {
+          removeCoupon();
+          showToast(`未達折抵門檻 $${activeCoupon.minSpend.toLocaleString()}`, 'warning');
+        }
+      }
+
+      const grandTotal = Math.max(0, subtotal - discountAmount + shippingCost);
+
+      document.getElementById('cartSubtotal').innerText = `NT$ ${subtotal.toLocaleString()}`;
+      document.getElementById('cartDiscount').innerText = `- NT$ ${discountAmount.toLocaleString()}`;
+      document.getElementById('cartShipping').innerText = shippingCost === 0 ? '免運費' : `NT$ ${shippingCost}`;
+      document.getElementById('cartTotal').innerText = `NT$ ${grandTotal.toLocaleString()}`;
+    }
+
+    // Coupon logic
+    function applyCoupon() {
+      const code = document.getElementById('couponInput').value.trim().toUpperCase();
+      if (!code) return;
+
+      if (VALID_COUPONS[code]) {
+        const coupon = VALID_COUPONS[code];
+        const subtotal = cart.reduce((sum, item) => {
+          const p = PRODUCTS.find(x => x.id === item.id);
+          return sum + (p ? p.price * item.qty : 0);
+        }, 0);
+
+        if (subtotal < coupon.minSpend) {
+          showToast(`此折扣碼需滿 NT$ ${coupon.minSpend.toLocaleString()} 方可套用`, 'warning');
+          return;
+        }
+
+        activeCoupon = coupon;
+        document.getElementById('appliedCouponTag').classList.remove('hidden');
+        document.getElementById('couponCodeDisplay').innerText = code;
+        showToast(`已成功套用折扣碼！折抵 $${coupon.value}`, 'success');
+        updateCartUI();
+      } else {
+        showToast('無效的折扣碼，請重新確認！', 'error');
+      }
+    }
+
+    function removeCoupon() {
+      activeCoupon = null;
+      document.getElementById('appliedCouponTag').classList.add('hidden');
+      document.getElementById('couponInput').value = '';
+      updateCartUI();
+    }
+
+    // Drawer Sliding Controls
+    function toggleCartDrawer(open) {
+      const panel = document.getElementById('cartPanel');
+      const backdrop = document.getElementById('cartBackdrop');
+      const drawer = document.getElementById('cartDrawer');
+
+      if (open) {
+        drawer.classList.remove('pointer-events-none');
+        backdrop.classList.remove('opacity-0');
+        panel.classList.remove('translate-x-full');
+      } else {
+        backdrop.classList.add('opacity-0');
+        panel.classList.add('translate-x-full');
+        setTimeout(() => {
+          drawer.classList.add('pointer-events-none');
+        }, 300);
+      }
+    }
+
+    // Specs Modal Logic
+    let currentModalProduct = null;
+    function openSpecsModal(productId) {
+      const p = PRODUCTS.find(item => item.id === productId);
+      if (!p) return;
+
+      currentModalProduct = p;
+      modalQuantity = 1;
+      document.getElementById('modalQtyDisplay').innerText = modalQuantity;
+
+      document.getElementById('modalProductImage').innerHTML = generateProductSVG(p.category, p.name);
+      document.getElementById('modalBrandBadge').innerText = p.brand;
+      document.getElementById('modalProductName').innerText = p.name;
+      document.getElementById('modalProductDesc').innerText = p.desc;
+      document.getElementById('modalProductPrice').innerText = `NT$ ${p.price.toLocaleString()}`;
+      document.getElementById('modalProductOriginalPrice').innerText = `NT$ ${p.originalPrice.toLocaleString()}`;
+
+      // Specs rows
+      const table = document.getElementById('modalSpecsTable');
+      table.innerHTML = Object.entries(p.specsDetail).map(([k, v]) => `
+        <tr>
+          <td class="py-2.5 px-4 font-bold text-slate-400 w-1/3 bg-slate-900/90 font-tech border-r border-slate-800">${k}</td>
+          <td class="py-2.5 px-4 text-slate-200 font-medium">${v}</td>
+        </tr>
+      `).join('');
+
+      // Add To Cart button trigger inside modal
+      const btn = document.getElementById('modalAddToCartBtn');
+      btn.onclick = (e) => {
+        handleAddToCart(e, p.id, modalQuantity);
+        closeSpecsModal();
+      };
+
+      const modal = document.getElementById('specsModal');
+      const content = document.getElementById('specsModalContent');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      content.classList.remove('scale-95');
+      content.classList.add('scale-100');
+    }
+
+    function adjustModalQty(delta) {
+      modalQuantity = Math.max(1, modalQuantity + delta);
+      document.getElementById('modalQtyDisplay').innerText = modalQuantity;
+    }
+
+    function closeSpecsModal() {
+      const modal = document.getElementById('specsModal');
+      const content = document.getElementById('specsModalContent');
+      content.classList.remove('scale-100');
+      content.classList.add('scale-95');
+      modal.classList.add('opacity-0');
+      setTimeout(() => {
+        modal.classList.add('pointer-events-none');
+      }, 300);
+    }
+
+    // Checkout Workflow
+    function openCheckoutModal() {
+      if (cart.length === 0) {
+        showToast('您的購物車是空的，無法結帳！', 'warning');
+        return;
+      }
+      toggleCartDrawer(false);
+
+      // Render checkout summary
+      const list = document.getElementById('checkoutItemsList');
+      let subtotal = 0;
+      list.innerHTML = cart.map(item => {
+        const p = PRODUCTS.find(x => x.id === item.id);
+        if (!p) return '';
+        subtotal += p.price * item.qty;
+        return `
+          <div class="flex justify-between items-center py-1.5 text-xs">
+            <span class="text-slate-300 font-medium truncate max-w-[280px]">${p.name} x ${item.qty}</span>
+            <span class="font-tech text-cyber-cyan font-bold">NT$ ${(p.price * item.qty).toLocaleString()}</span>
+          </div>
+        `;
+      }).join('');
+
+      const freeShippingThreshold = 30000;
+      const shipping = (subtotal >= freeShippingThreshold) ? 0 : 250;
+      let discount = 0;
+      if (activeCoupon && subtotal >= activeCoupon.minSpend) {
+        discount = activeCoupon.value;
+      }
+      const total = Math.max(0, subtotal - discount + shipping);
+
+      document.getElementById('checkoutTotalAmount').innerText = `NT$ ${total.toLocaleString()}`;
+
+      const modal = document.getElementById('checkoutModal');
+      const content = document.getElementById('checkoutModalContent');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      content.classList.remove('scale-95');
+    }
+
+    function closeCheckoutModal() {
+      const modal = document.getElementById('checkoutModal');
+      modal.classList.add('opacity-0');
+      setTimeout(() => {
+        modal.classList.add('pointer-events-none');
+      }, 300);
+    }
+
+    function submitOrder(e) {
+      e.preventDefault();
+      closeCheckoutModal();
+
+      // Show random order ID
+      const orderId = 'TF-2026' + Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('successOrderId').innerText = orderId;
+
+      setTimeout(() => {
+        const successModal = document.getElementById('orderSuccessModal');
+        successModal.classList.remove('opacity-0', 'pointer-events-none');
+        clearCart();
+      }, 400);
+    }
+
+    function closeOrderSuccessModal() {
+      const modal = document.getElementById('orderSuccessModal');
+      modal.classList.add('opacity-0');
+      setTimeout(() => {
+        modal.classList.add('pointer-events-none');
+      }, 300);
+    }
+
+    // Floating Cyber Toast Notifications
+    function showToast(msg, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      
+      let borderClass = 'border-cyber-cyan/50 text-cyber-cyan';
+      let icon = 'fa-circle-info';
+      if (type === 'success') {
+        borderClass = 'border-emerald-500/50 text-emerald-400';
+        icon = 'fa-circle-check';
+      } else if (type === 'warning') {
+        borderClass = 'border-amber-500/50 text-amber-400';
+        icon = 'fa-triangle-exclamation';
+      } else if (type === 'error') {
+        borderClass = 'border-red-500/50 text-red-400';
+        icon = 'fa-circle-xmark';
+      }
+
+      toast.className = `glass-panel px-4 py-3 rounded-xl border ${borderClass} shadow-neon-cyan flex items-center space-x-3 text-xs font-tech font-bold pointer-events-auto transform translate-y-5 opacity-0 transition-all duration-300`;
+      toast.innerHTML = `<i class="fa-solid ${icon} text-base"></i><span>${msg}</span>`;
+
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-5', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-5', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    }
+
+    // Scroll Helper
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function scrollToSection(id) {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Run Initialization on DOM Ready
+    window.onload = function() {
+      initApp();
+    };
+  </script>
+</body>
+</html>
